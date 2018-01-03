@@ -63,7 +63,9 @@
 2.  docker node update --label-add logstash=logstash elk2 && docker node update --label-add logstash=logstash elk3 
 备注： 有logstash标签的节点才会接受logstash服务
 
-3. docker node update --label-add elasticsearch=elasticsearch elk1 && docker node update --label-add elasticsearch=elasticsearch elk2 &&    docker node update --label-add elasticsearch=elasticsearch elk3
+3. docker node update --label-add elasticsearch=elasticsearch elk1 && \
+   docker node update --label-add elasticsearch=elasticsearch elk2 && \
+   docker node update --label-add elasticsearch=elasticsearch elk3
 备注： 有elasticsearch标签的节点才会接受elasticsearch服务 
 
 4. git clone https://github.com/yangzhenwei-java/docker-swarm-elk.git
@@ -76,4 +78,11 @@
 
 ## 备注：
 
-    1、registry.cn-beijing.aliyuncs.com/yangzhenwei/elasticsearch 与 docker.elastic.co/elasticsearch/elasticsearch:6.1.0 没有任何区别，只是为了加速下载镜像,官方的镜像下载太慢了
+    1、registry.cn-beijing.aliyuncs.com/yangzhenwei/elasticsearch 
+    与 docker.elastic.co/elasticsearch/elasticsearch:6.1.0 没有任何区别，
+    只是为了加速下载镜像,官方的镜像下载太慢了。
+    
+    2. 收集tomcat的日志格式如下
+    <pattern> %d^|^%contextName^|^%X{requestId}^|^%level^|^%c{1.}^|^%t^|^%m%n</pattern>
+    
+    3. 收集

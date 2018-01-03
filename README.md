@@ -78,11 +78,27 @@
 
 ## 备注：
 
-    1、registry.cn-beijing.aliyuncs.com/yangzhenwei/elasticsearch 
-    与 docker.elastic.co/elasticsearch/elasticsearch:6.1.0 没有任何区别，
-    只是为了加速下载镜像,官方的镜像下载太慢了。
+```
+    1. registry.cn-beijing.aliyuncs.com/yangzhenwei/elasticsearch 只是为了加速下载镜像,
+        没有做别的改动。官方的镜像如docker.elastic.co/elasticsearch/elasticsearch:6.1.0 下载太慢了。
     
     2. 收集tomcat的日志格式如下
     <pattern> %d^|^%contextName^|^%X{requestId}^|^%level^|^%c{1.}^|^%t^|^%m%n</pattern>
     
-    3. 收集
+    3. 收集nginx的日志格式如下
+        log_format json '{"datetime":"$time_local",'
+                        '"clientip":"$remote_addr",'
+                        '"ident":"$remote_user",'
+                        '"http_host":"$host",'
+                        '"method":"$request_method",'
+                        '"url":"$uri",'
+                        '"status":$status,'
+                        '"bytes":$body_bytes_sent,'
+                        '"referrer":"$http_referer",'
+                        '"agent":"$http_user_agent",'
+                        '"x_forwarded_for":"$http_x_forwarded_for",'
+                        '"appName":"$app_name",'
+                        '"upstream_addr":"$upstream_addr",'
+                        '"upstream_response_time":"$upstream_response_time",'
+                        '"request_time":$request_time}';
+```

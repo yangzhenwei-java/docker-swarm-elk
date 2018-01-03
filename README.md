@@ -22,6 +22,7 @@
 ```
 
 ## 准备elk环境
+
 ```
 1. docker-machine ssh elk1 "sysctl -w vm.max_map_count=262144"
 
@@ -36,10 +37,11 @@
                                   
 4. docker-machine ssh elk1 "sudo swapoff -a" （永久关闭交换内存则需要修改/etc/fstab）
 
-5. **docker-machine ssh elk2、elk3也执行上述步骤。**
+5. docker-machine ssh elk2、elk3也执行上述步骤。
 ```
  
 ## 准备swarm环境
+
 ```
 1. docker-machine ssh elk1  "docker swarm init"
 
@@ -52,11 +54,12 @@
 5. docker-machine ssh elk2 "firewall-cmd --permanent --zone=public --add-port=5601/tcp  --add-port=9200/tcp  --add-port=5044/tcp --add-port=7946/tcp  --add-port=7946/udp  --add-port=4789/udp --permanent  && firewall-cmd --reload" 
 
 6. docker-machine ssh elk3 "firewall-cmd --permanent --zone=public --add-port=5601/tcp  --add-port=9200/tcp  --add-port=5044/tcp --add-port=7946/tcp  --add-port=7946/udp  --add-port=4789/udp --permanent  && firewall-cmd --reload" 
-*备注:5601是kibana端口、9200是elasticsearch*
+备注:5601是kibana端口、9200是elasticsearch的端口、5044是beat接收日志的端口、7946与4789是swarm服务发现的端口
 ```
 
 
 ## 准备启动
+
 ```
 1. eval $(docker-machine env elk1)
 
@@ -73,7 +76,7 @@
 5. cd docker-swarm-elk && docker stack deploy -c docker-compose.yml elk
 
 6. docker run  --name filebeat -v /root/logs:/usr/share/filebeat/logs  registry.cn-beijing.aliyuncs.com/yangzhenwei/filebeat:6.1.0
-        *备注：当前docker-machine的默认控制节点是elk1, 执行eval $(docker-machine env --unset)去除控制*
+备注：当前docker-machine的默认控制节点是elk1, 执行eval $(docker-machine env --unset)去除控制
 ```
 
 ## 备注：
@@ -102,3 +105,6 @@
                         '"upstream_response_time":"$upstream_response_time",'
                         '"request_time":$request_time}';
 ```
+### 作者邮箱 : sxlc_yzw@163.com
+    
+### 作者QQ : 646473942

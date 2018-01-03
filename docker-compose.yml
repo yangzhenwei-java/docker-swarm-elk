@@ -1,0 +1,118 @@
+version: '3.3'
+
+volumes:
+  esdata3:
+    driver: local
+networks:
+  esnet:
+    driver: overlay
+configs:
+  logstash-conf:
+    file: ./logstash/logstash.conf
+  es_proxy_config:
+    file: ./es_proxy/nginx.conf
+  kibana_config:
+    file: ./kibana/kibana.yml
+services:
+  elasticsearch:
+    image: registry.cn-beijing.aliyuncs.com/yangzhenwei/elasticsearch:6.1.0
+    environment:
+      - "cluster.name=es-prod"
+      - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
+      - "network.host=0.0.0.0"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+      - "ELASTIC_PASSWORD=changeme"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - esnet
+    volumes:
+      - esdata3:/usr/share/elasticsearch/data
+      - /etc/localtime:/etc/localtime:ro
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.labels.elasticsearch == elasticsearch
+      endpoint_mode: dnsrr
+  logstash:
+    image: registry.cn-beijing.aliyuncs.com/yangzhenwei/logstash:6.1.0
+    environment:
+      - "xpack.monitoring.elasticsearch.url=http://elasticsearch:9200"
+      - "xpack.monitoring.elasticsearch.username=elastic"
+      - "xpack.monitoring.elasticsearch.password=changeme"
+      - "LS_JAVA_OPTS=-Xmx2g"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4096M
+      placement:
+        constraints:
+          - node.labels.logstash == logstash
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    ports:
+      - 5044:5044
+    networks:
+      - esnet
+    configs:
+      - source: logstash-conf
+        target: /usr/share/logstash/pipeline/logstash.conf
+  kibana:
+    image: registry.cn-beijing.aliyuncs.com/yangzhenwei/kibana:6.1.0
+    ports:
+      - "5601:5601"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - esnet
+    configs:
+      - source: kibana_config
+        target: /usr/share/kibana/config/kibana.yml
+  es_proxy:
+    image: nginx:latest
+    ports:
+      - "9200:80"
+    networks:
+      - esnet
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1024M
+      update_config:
+        parallelism: 1
+        delay: 5s
+      placement:
+        constraints:
+          - node.role != manager
+      restart_policy:
+        condition: on-failure
+    configs:
+      - source: es_proxy_config
+        target: /etc/nginx/nginx.conf
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - esnet
+

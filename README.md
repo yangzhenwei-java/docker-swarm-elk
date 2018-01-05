@@ -6,7 +6,7 @@
   --driver generic \
   --generic-ip-address=10.33.80.122  \
   --generic-ssh-key ~/.ssh/id_rsa \
-   elk1```
+   elk1
 
 2. docker-machine create  --engine-registry-mirror=https://7os77co8.mirror.aliyuncs.com \
   --driver generic \

@@ -49,12 +49,12 @@
 
 3. docker-machine ssh elk3  "docker swarm join --token SWMTKN-1-************************ IP(elk1的IP)"
 
-4. docker-machine ssh elk1 "firewall-cmd --permanent --zone=public --add-port=5601/tcp  --add-port=9200/tcp  --add-port=5044/tcp --add-port=7946/tcp  --add-port=7946/udp  --add-port=4789/udp --permanent  && firewall-cmd --reload" 
+4. docker-machine ssh elk1 "firewall-cmd --permanent --zone=public --add-port=5601/tcp  --add-port=9200/tcp  --add-port=5044/tcp --add-port=7946/tcp  --add-port=7946/udp  --add-port=4789/udp  --add-port=4789/tcp --permanent  && firewall-cmd --reload" 
 
-5. docker-machine ssh elk2 "firewall-cmd --permanent --zone=public --add-port=5601/tcp  --add-port=9200/tcp  --add-port=5044/tcp --add-port=7946/tcp  --add-port=7946/udp  --add-port=4789/udp --permanent  && firewall-cmd --reload" 
+5. docker-machine ssh elk2 "firewall-cmd --permanent --zone=public --add-port=5601/tcp  --add-port=9200/tcp  --add-port=5044/tcp --add-port=7946/tcp  --add-port=7946/udp  --add-port=4789/udp  --add-port=4789/tcp --permanent  && firewall-cmd --reload" 
 
-6. docker-machine ssh elk3 "firewall-cmd --permanent --zone=public --add-port=5601/tcp  --add-port=9200/tcp  --add-port=5044/tcp --add-port=7946/tcp  --add-port=7946/udp  --add-port=4789/udp --permanent  && firewall-cmd --reload" 
-备注:5601是kibana端口、9200是elasticsearch的端口、5044是beat接收日志的端口、7946与4789是swarm服务发现的端口
+6. docker-machine ssh elk3 "firewall-cmd --permanent --zone=public --add-port=5601/tcp  --add-port=9200/tcp  --add-port=5044/tcp --add-port=7946/tcp  --add-port=7946/udp  --add-port=4789/udp  --add-port=4789/tcp --permanent  && firewall-cmd --reload" 
+备注:5601是kibana端口、9200是elasticsearch的端口、5044是beat接收日志的端口、7946节点通信、4789覆盖网络流量
 ```
 
 
